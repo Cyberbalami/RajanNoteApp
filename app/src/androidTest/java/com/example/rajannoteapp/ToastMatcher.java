@@ -18,12 +18,20 @@ public class ToastMatcher extends TypeSafeMatcher<Root> {
 
     @Override
     public boolean matchesSafely(Root root) {
+        // Check if this window is a toast OR a system overlay toast
         int type = root.getWindowLayoutParams().get().type;
-        if ((type == WindowManager.LayoutParams.TYPE_TOAST)) {
+
+        // Accept both toast types:
+        if (type == WindowManager.LayoutParams.TYPE_TOAST ||
+                type == WindowManager.LayoutParams.TYPE_APPLICATION_PANEL) {
+
             IBinder windowToken = root.getDecorView().getWindowToken();
             IBinder appToken = root.getDecorView().getApplicationWindowToken();
+
+            // Toasts have windowToken == appToken
             return windowToken == appToken;
         }
+
         return false;
     }
 }
